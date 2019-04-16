@@ -1,0 +1,6 @@
+{
+    "require": {
+        "react/http": "^0.8.4",
+        "webonyx/graphql-php": "^0.13"
+    }
+}
