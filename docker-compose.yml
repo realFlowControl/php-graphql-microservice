@@ -14,5 +14,12 @@ services:
       - "8002:3000"
     networks:
       - microservices
+  api:
+    build:
+      context: ./api
+    ports:
+      - "8000:3000"
+    networks:
+      - microservices
 networks: 
   microservices:
