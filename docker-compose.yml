@@ -7,6 +7,8 @@ services:
       - "8001:3000"
     networks: 
       - microservices
+    volumes:
+      - ./products/:/app
   review-service:
     build:
       context: ./reviews
@@ -14,6 +16,8 @@ services:
       - "8002:3000"
     networks:
       - microservices
+    volumes:
+      - ./reviews/:/app
   api:
     build:
       context: ./api
@@ -21,5 +25,7 @@ services:
       - "8000:3000"
     networks:
       - microservices
+    volumes:
+      - ./api/:/app
 networks: 
   microservices:
