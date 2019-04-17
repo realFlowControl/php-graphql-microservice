@@ -6,6 +6,9 @@ use React\EventLoop\Factory;
 use React\Http\Response;
 use React\Http\Server;
 
+use Clue\React\Buzz\Browser;
+use Psr\Http\Message\ResponseInterface;
+
 use GraphQL\GraphQL;
 use GraphQL\Type\Schema;
 use GraphQL\Executor\ExecutionResult;
@@ -16,7 +19,52 @@ use GraphQL\Type\Definition\Type;
 
 require __DIR__ . '/vendor/autoload.php';
 
-$queryType = new ObjectType([
+$loop = Factory::create();
+$browser = new Browser($loop);
+
+$productType = new ObjectType([
+    'name' => 'Product',
+    'fields' => [
+        'id' => [
+            'type' => Type::id(),
+        ],
+        'name' => [
+            'type' => Type::string(),
+        ],
+        'description' => [
+            'type' => Type::string(),
+        ]
+    ]
+]);
+
+$reviewType = new ObjectType([
+    'name' => 'Review',
+    'fields' => [
+        'id' => [
+            'type' => Type::id(),
+        ],
+        'title' => [
+            'type' => Type::string(),
+        ],
+        'grade' => [
+            'type' => Type::int(),
+        ],
+        'comment' => [
+            'type' => Type::string(),
+        ],
+        'product' => [
+            'type' => $productType,
+            'resolve' => function ($review) use ($browser) {
+                return $browser->get('http://product-service:3000/')->then(function($response) {
+                    $rawBody = (string)$response->getBody();
+                    return json_decode($rawBody);
+                });
+            }
+        ]
+    ]
+]);
+
+$query = new ObjectType([
     'name' => 'Query',
     'fields' => [
         'echo' => [
@@ -27,25 +75,42 @@ $queryType = new ObjectType([
             'resolve' => function($root, $args) {
                 return $root['prefix'] . $args['message'];
             }
-        ]/*,
-        'echo' => [
-            'type' => Type::string(),
+        ],
+        'product' => [
+            'type' => $productType,
             'args' => [
-                'message' => Type::nonNull(Type::string()),
+                'id' => Type::nonNull(Type::id()),
             ],
-            'resolve' => function ($root, $args) {
-                return $root['prefix'] . $args['message'];
+            'resolve' => function ($root, $args) use ($browser) {
+                return $browser->get('http://product-service:3000/')->then(function($response) {
+                    $rawBody = (string)$response->getBody();
+                    return json_decode($rawBody);
+                });
             }
         ],
-        */
+        'review' => [
+            'type' => $reviewType,
+            'args' => [
+                'id' => Type::nonNull(Type::id()),
+            ],
+            'resolve' => function ($root, $args) use ($browser) {
+                return $browser->get('http://review-service:3000/')->then(function($response) {
+                    $rawBody = (string)$response->getBody();
+                    return json_decode($rawBody);
+                });
+            }
+        ],
+
     ],
 ]);
 
 $schema = new Schema([
-    'query' => $queryType
+    'query' => $query,
+    'types' => [
+        $productType
+    ]
 ]);
 
-$loop = Factory::create();
 $react = new ReactPromiseAdapter();
 
 $server = new Server(function (ServerRequestInterface $request) use ($schema, $react) {
@@ -54,6 +119,7 @@ $server = new Server(function (ServerRequestInterface $request) use ($schema, $r
     $query = $input['query'];
     $variableValues = isset($input['variables']) ? $input['variables'] : null;
     $rootValue = ['prefix' => 'You said: '];
+    var_dump($query);
     $promise = GraphQL::promiseToExecute($react, $schema, $query, $rootValue, null, $variableValues);
     return $promise->then(function(ExecutionResult $result) {
         $output = $result->toArray();
