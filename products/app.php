@@ -12,14 +12,14 @@ $loop = Factory::create();
 $server = new Server(function (ServerRequestInterface $request) {
     return new Response(
         200,
-        array(
+        [
             'Content-Type' => 'application/json'
-        ),
+        ],
         json_encode([
             'id' => 1,
             'name' => 'Avengers',
             'description' => 'a movie'
-        ])
+        ], JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR)
     );
 });
 $socket = new \React\Socket\Server('0.0.0.0:3000', $loop);

@@ -32,10 +32,10 @@ $server = new Server(function (ServerRequestInterface $request) use ($schema, $r
         $output = $result->toArray();
         return new Response(
             200,
-            array(
+            [ 
                 'Content-Type' => 'application/json'
-            ),
-            json_encode($output)
+            ],
+            json_encode($output, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR)
         );
     });
 });
