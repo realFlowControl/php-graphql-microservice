@@ -39,7 +39,7 @@ $server = new Server(function (ServerRequestInterface $request) use ($schema, $r
         );
     });
 });
-$socket = new \React\Socket\Server('0.0.0.0:3000', $loop);
+$socket = new \React\Socket\Server('0.0.0.0:' . getenv('PORT'), $loop);
 $server->listen($socket);
 echo 'Listening on ' . str_replace('tcp:', 'http:', $socket->getAddress()) . PHP_EOL;
 $loop->run();
