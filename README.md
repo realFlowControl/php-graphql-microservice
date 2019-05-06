@@ -1,4 +1,4 @@
-# Serverless GraphQL API on top of Microservices
+# GraphQL API on top of Microservices
 
 ... written in PHP
 
