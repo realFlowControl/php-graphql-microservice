@@ -26,6 +26,8 @@ curl -X POST \
 ## Build With
 
 - [ReactPHP](https://reactphp.org/)
+- [graphql-php](https://github.com/webonyx/graphql-php)
+- [clue/buzz-react](https://github.com/clue/reactphp-buzz)
 
 ## License
 
