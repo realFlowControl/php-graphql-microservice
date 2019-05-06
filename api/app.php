@@ -26,8 +26,7 @@ $server = new Server(function (ServerRequestInterface $request) use ($schema, $r
     $input = json_decode((string)$request->getBody(), true);
     $query = $input['query'];
     $variableValues = isset($input['variables']) ? $input['variables'] : null;
-    $rootValue = ['prefix' => 'You said: '];
-    $promise = GraphQL::promiseToExecute($react, $schema, $query, $rootValue, null, $variableValues);
+    $promise = GraphQL::promiseToExecute($react, $schema, $query, [], null, $variableValues);
     return $promise->then(function(ExecutionResult $result) {
         $output = $result->toArray();
         return new Response(
