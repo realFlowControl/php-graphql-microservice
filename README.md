@@ -10,7 +10,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 You need to have `docker` and `docker-compose` up and running on your local machine.
 
-## Installing
+### Installing
 
 ```bash
 git clone https://github.com/flow-control/php-graphql-microservice.git
