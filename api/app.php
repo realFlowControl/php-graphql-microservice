@@ -20,13 +20,18 @@ $browser = new Browser($loop);
 
 require __DIR__ . '/schema.php';
 
+// GraphQL-PHP needs to know which async implementation we are using
+// in this case it's ReactPHP
 $react = new ReactPromiseAdapter();
 
 $server = new Server(function (ServerRequestInterface $request) use ($schema, $react) {
+    // GraphQL Input is "just" a JSON-String
     $input = json_decode((string)$request->getBody(), true);
     $query = $input['query'];
     $variableValues = isset($input['variables']) ? $input['variables'] : null;
+    // just pass query and variables to the GraphQL lib
     $promise = GraphQL::promiseToExecute($react, $schema, $query, [], null, $variableValues);
+    // promiseToExecute will return a ReactPHP Promise, so we can register our then callback
     return $promise->then(function(ExecutionResult $result) {
         $output = $result->toArray();
         return new Response(

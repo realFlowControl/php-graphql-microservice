@@ -6,6 +6,7 @@ use GraphQL\Executor\ExecutionResult;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 
+// the resolver function may return a string or a ReactPHP Promise
 $productResolver = function ($review) use ($browser) {
     return $browser->get('http://product-service:3000/')->then(function($response) {
         $rawBody = (string)$response->getBody();
@@ -19,6 +20,8 @@ $reviewResolver = function ($product) use ($browser) {
         return json_decode($rawBody);
     });
 };
+
+// return type definitions
 
 $productType = new ObjectType([
     'name' => 'Product',
@@ -57,6 +60,8 @@ $reviewType = new ObjectType([
     ]
 ]);
 
+// query defintion
+
 $query = new ObjectType([
     'name' => 'Query',
     'fields' => [
@@ -86,6 +91,8 @@ $query = new ObjectType([
 
     ],
 ]);
+
+// schema packs query and types together
 
 $schema = new Schema([
     'query' => $query,
