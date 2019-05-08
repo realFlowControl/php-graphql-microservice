@@ -23,7 +23,7 @@ curl -X POST \
        localhost:8000
 ```
 
-## Build With
+## Build with
 
 - [ReactPHP](https://reactphp.org/)
 - [graphql-php](https://github.com/webonyx/graphql-php)
