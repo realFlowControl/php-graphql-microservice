@@ -1,7 +1,6 @@
 {
     "require": {
-        "react/http": "^0.8.4",
-        "webonyx/graphql-php": "^0.13",
-        "clue/buzz-react": "^2"
+        "react/http": "^1.5.0",
+        "webonyx/graphql-php": "^14.11.3"
     }
 }

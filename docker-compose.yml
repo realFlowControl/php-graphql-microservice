@@ -1,5 +1,7 @@
 version: '3.3'
+
 services: 
+
   product-service:
     build:
       context: ./products
@@ -9,6 +11,7 @@ services:
       - microservices
     volumes:
       - ./products/:/app
+
   review-service:
     build:
       context: ./reviews
@@ -18,6 +21,7 @@ services:
       - microservices
     volumes:
       - ./reviews/:/app
+
   api:
     build:
       context: ./api
@@ -27,5 +31,6 @@ services:
       - microservices
     volumes:
       - ./api/:/app
+
 networks: 
   microservices:
